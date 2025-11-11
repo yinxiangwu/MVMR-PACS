@@ -1,4 +1,4 @@
-#
+# Code from https://github.com/verena-zuber/demo_AMD
 # 15th April 2019
 # risk factor selection for multivariable MR based on Bayes Factors
 # computation is based on summary data which speeds up computation 

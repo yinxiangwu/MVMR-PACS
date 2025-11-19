@@ -80,15 +80,13 @@ lasso@Estimate
 
 eps <- 1e-4
 
-betawt <- obtain_initial(beta.exposure,se.exposure,beta.outcome,se.outcome,iv_strength_parameter = ivw.obj$iv_strength_parameter,P = P,epsilon = eps, n_times = 5, lambda.1se = TRUE, seed = 1234, lambda.length = 30)
-
 # MVMR-dLASSO
 
-dlasso <- mvmr_pacs_cv_parallel(beta.exposure = beta.exposure, se.exposure = se.exposure, beta.outcome = beta.outcome, se.outcome = se.outcome, P = P, type = 3, RR_obs = cor(beta.exposure), rr_cut_off = 1, betawt = betawt, tau = c(0.5, 1, 2, 3), eps = eps, n_times = 5,lambda.1se = TRUE, lambda.length = 30, seed = 1234)
+dlasso <- mvmr.pacs(beta.exposure = beta.exposure, se.exposure = se.exposure, beta.outcome = beta.outcome, se.outcome = se.outcome, P = P, type = 3, rr_cut_off = 1, tau = c(0.5, 1, 2, 3), eps = 1e-4, n_times = 5,lambda.1se = TRUE, lambda.length = 30, seed = 1234)
 
 beta.dlasso.res <- dlasso$beta
 
-pacs <- mvmr_pacs_cv_parallel(beta.exposure = beta.exposure, se.exposure = se.exposure, beta.outcome = beta.outcome, se.outcome = se.outcome, P = P, type = 2, RR_obs = cor(beta.exposure), betawt = betawt, tau = c(0.5, 1, 2, 3), eps = eps, n_times = 5, seed = 1234, lambda.length = 30, lambda.1se = TRUE)
+pacs <- mvmr.pacs(beta.exposure = beta.exposure, se.exposure = se.exposure, beta.outcome = beta.outcome, se.outcome = se.outcome, P = P, type = 2, tau = c(0.5, 1, 2, 3), eps = 1e-4, n_times = 5, seed = 1234, lambda.length = 30, lambda.1se = TRUE)
 
 beta.pacs.res <- pacs$beta
 
@@ -120,23 +118,18 @@ print(round(t(tbl_res),3))
 
 write.csv(round(t(tbl_res),3),'~/OneDrive - UW/UW biostats/2023-24 RA/MR with highly correlated exposure/manuscript/code/real data application/main_analysis_090925.csv')
 
-### Data thinning
+### MVMR-PACS with data thinning for post-selection inference
 
-## data thinning
-
-res_dt <- DT_PACS_dIVW_parallel(beta.exposure = beta.exposure,
-                                       se.exposure = se.exposure,
-                                       beta.outcome = beta.outcome,
-                                       se.outcome = se.outcome,
-                                       P = P,
-                                       RR_obs = cor(beta.exposure),
-                                       cluster = NULL,
-                                       tau = c(0.5,1,2,3),
-                                       n_times = 1,
-                                       re = 100,
-                                       rr_cut_off = 0,
-                                       type = 2,
-                                       epsilon = 1e-4,
-                                       lambda.1se = TRUE)
-
+res_dt <- mvmr.pacs.datathin(beta.exposure = beta.exposure,
+                             se.exposure = se.exposure,
+                             beta.outcome = beta.outcome,
+                             se.outcome = se.outcome,
+                             P = P,
+                             tau = c(0.5,1,2,3),
+                             n_times = 1,
+                             re = 100,
+                             rr_cut_off = 0,
+                             type = 2,
+                             epsilon = 1e-4,
+                             lambda.1se = TRUE)
 
